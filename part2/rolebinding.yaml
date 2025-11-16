@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: monitoring-read-binding
+  namespace: monitoring
+subjects:
+  - kind: ServiceAccount
+    name: monitoring-reader
+    namespace: monitoring
+roleRef:
+  kind: Role
+  name: monitoring-read-role
+  apiGroup: rbac.authorization.k8s.io

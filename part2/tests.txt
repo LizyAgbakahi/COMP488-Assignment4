@@ -1,0 +1,62 @@
+=== kubectl apply -f part2/namespace.yaml ===
+namespace/monitoring created
+
+=== kubectl get ns ===
+NAME                    STATUS   AGE
+comp488                 Active   58d
+default                 Active   79d
+kube-node-lease         Active   79d
+kube-prometheus-stack   Active   37d
+kube-public             Active   79d
+kube-system             Active   79d
+monitoring              Active   0s
+production              Active   31d
+staging                 Active   31d
+
+=== kubectl apply -f part2/serviceaccount.yaml ===
+serviceaccount/monitoring-reader created
+
+=== kubectl get sa -n monitoring ===
+NAME                SECRETS   AGE
+default             0         2m52s
+monitoring-reader   0         0s
+
+=== kubectl apply -f part2/role.yaml ===
+role.rbac.authorization.k8s.io/monitoring-read-role created
+
+=== kubectl get role -n monitoring ===
+NAME                   CREATED AT
+monitoring-read-role   2025-11-16T18:20:00Z
+
+=== kubectl apply -f part2/rolebinding.yaml ===
+rolebinding.rbac.authorization.k8s.io/monitoring-read-binding created
+
+=== kubectl get rolebinding -n monitoring ===
+NAME                   ROLE                        AGE
+monitoring-read-binding   Role/monitoring-read-role   0s
+
+lizyagbakahi@Mac COMP488-assignment4 % kubectl apply -f part2/monitoring-test-pod.yaml
+kubectl get pods -n monitoring
+
+pod/monitoring-test-pod created
+NAME                  READY   STATUS              RESTARTS   AGE
+monitoring-test-pod   0/1     ContainerCreating   0          0s
+lizyagbakahi@Mac COMP488-assignment4 % kubectl get pods -n monitoring
+
+NAME                  READY   STATUS    RESTARTS   AGE
+monitoring-test-pod   1/1     Running   0          89s
+lizyagbakahi@Mac COMP488-assignment4 % 
+
+=== Inside monitoring-test-pod: kubectl get pods -n monitoring ===
+NAME                  READY   STATUS    RESTARTS   AGE
+monitoring-test-pod   1/1     Running   0          7m23s
+
+=== Inside monitoring-test-pod: kubectl get configmaps -n monitoring ===
+NAME               DATA   AGE
+kube-root-ca.crt   1      28m
+
+=== Inside monitoring-test-pod: kubectl get deployments -n monitoring ===
+No resources found in monitoring namespace.
+
+=== Inside monitoring-test-pod: kubectl delete pod monitoring-test-pod -n monitoring ===
+Error from server (Forbidden): pods "monitoring-test-pod" is forbidden: User "system:serviceaccount:monitoring:monitoring-reader" cannot delete resource "pods" in API group "" in the namespace "monitoring"

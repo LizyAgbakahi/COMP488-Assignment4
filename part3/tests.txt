@@ -1,0 +1,80 @@
+=== kubectl apply -f part3/serviceaccount.yaml ===
+serviceaccount/log-collector created
+
+=== kubectl get sa -n default ===
+NAME            SECRETS   AGE
+default         0         79d
+log-collector   0         0s
+
+=== kubectl apply -f part3/clusterrole.yaml ===
+clusterrole.rbac.authorization.k8s.io/log-reader created
+
+=== kubectl get clusterrole | grep log-reader ===
+log-reader   2025-11-16T19:16:10Z
+
+=== kubectl apply -f part3/clusterrolebinding.yaml ===
+clusterrolebinding.rbac.authorization.k8s.io/log-reader-binding created
+
+=== kubectl get clusterrolebinding | grep log-reader-binding ===
+log-reader-binding   ClusterRole/log-reader   0s
+
+=== kubectl apply -f part3/log-collector-test-pod.yaml ===
+pod/log-collector-test-pod created
+
+=== kubectl get pods -n default ===
+NAME                                READY   STATUS      RESTARTS        AGE
+flask-deployment-65d44cdfc8-8lgff   1/1     Running     3 (2d20h ago)   52d
+flask-deployment-65d44cdfc8-9rcld   1/1     Running     3 (2d20h ago)   52d
+log-collector-test-pod              1/1     Running     0               42s
+test-pod                            0/1     Completed   0               93m
+
+=== Inside log-collector-test-pod: kubectl get pods -A ===
+NAMESPACE               NAME                                                        READY   STATUS             RESTARTS           AGE
+default                 flask-deployment-65d44cdfc8-8lgff                           1/1     Running            3 (2d20h ago)      52d
+default                 flask-deployment-65d44cdfc8-9rcld                           1/1     Running            3 (2d20h ago)      52d
+default                 log-collector-test-pod                                      1/1     Running            0                  4m6s
+default                 test-pod                                                    0/1     Completed          0                  97m
+kube-prometheus-stack   alertmanager-kube-prometheus-stack-alertmanager-0           2/2     Running            4 (2d20h ago)      37d
+kube-prometheus-stack   kube-prometheus-stack-grafana-6d7b6bcb55-8pd75              3/3     Running            6 (2d20h ago)      37d
+kube-prometheus-stack   kube-prometheus-stack-kube-state-metrics-557fd457c6-wrqbz   1/1     Running            9 (2d20h ago)      37d
+kube-prometheus-stack   kube-prometheus-stack-operator-54c65885cf-fqk4g             1/1     Running            12 (2d20h ago)     37d
+kube-prometheus-stack   kube-prometheus-stack-prometheus-node-exporter-v6knw        0/1     CrashLoopBackOff   4875 (3m43s ago)   37d
+kube-prometheus-stack   prometheus-kube-prometheus-stack-prometheus-0               2/2     Running            5 (2d20h ago)      37d
+kube-system             coredns-668d6bf9bc-rj6kh                                    1/1     Running            4 (2d20h ago)      79d
+kube-system             coredns-668d6bf9bc-wqj7s                                    1/1     Running            4 (2d20h ago)      79d
+kube-system             etcd-docker-desktop                                         1/1     Running            4 (2d20h ago)      79d
+kube-system             kube-apiserver-docker-desktop                               1/1     Running            4 (2d20h ago)      79d
+kube-system             kube-controller-manager-docker-desktop                      1/1     Running            4 (2d20h ago)      79d
+kube-system             kube-proxy-qvmhn                                            1/1     Running            4 (2d20h ago)      79d
+kube-system             kube-scheduler-docker-desktop                               1/1     Running            48 (2d20h ago)     79d
+kube-system             metrics-server-56fb9549f4-d7nxf                             1/1     Running            11 (2d20h ago)     52d
+kube-system             storage-provisioner                                         1/1     Running            55 (2d20h ago)     79d
+kube-system             vpnkit-controller                                           1/1     Running            4 (2d20h ago)      79d
+monitoring              monitoring-test-pod                                         1/1     Running            0                  53m
+production              frontend-5f9fbc896f-6l9n5                                   0/1     ImagePullBackOff   0                  31d
+production              frontend-5f9fbc896f-fj27m                                   0/1     ImagePullBackOff   0                  31d
+production              frontend-5f9fbc896f-k8vk5                                   0/1     ImagePullBackOff   0                  31d
+production              frontend-7fdcbbbf44-2wzkx                                   0/1     ImagePullBackOff   0                  31d
+production              order-api-6f4b9449c8-fqp5s                                  0/1     ImagePullBackOff   0                  31d
+production              order-api-77b9b56bd9-5qpk8                                  0/1     ImagePullBackOff   0                  31d
+production              order-api-77b9b56bd9-lsx7d                                  0/1     ImagePullBackOff   0                  31d
+production              product-api-67457b8655-9q2mq                                0/1     ImagePullBackOff   0                  31d
+production              product-api-67457b8655-wsng7                                0/1     ImagePullBackOff   0                  31d
+production              product-api-77457d9fdb-v2ngw                                0/1     ImagePullBackOff   0                  31d
+staging                 frontend-58494cbb68-t696z                                   0/1     ImagePullBackOff   0                  31d
+staging                 frontend-5f9fbc896f-7ndgl                                   0/1     ImagePullBackOff   0                  31d
+staging                 frontend-5f9fbc896f-9xsmh                                   0/1     ImagePullBackOff   0                  31d
+staging                 frontend-5f9fbc896f-jqjnt                                   0/1     ImagePullBackOff   0                  31d
+staging                 order-api-68c957898f-5j6nj                                  0/1     ImagePullBackOff   0                  31d
+staging                 order-api-77b9b56bd9-5nf8g                                  0/1     ImagePullBackOff   0                  31d
+staging                 order-api-77b9b56bd9-j8tld                                  0/1     ImagePullBackOff   0                  31d
+staging                 product-api-67457b8655-lwtsn                                0/1     ImagePullBackOff   0                  31d
+staging                 product-api-67457b8655-tr2r9                                0/1     ImagePullBackOff   0                  31d
+staging                 product-api-bbb8d4888-6dx2h                                 0/1     ImagePullBackOff   0                  31d
+
+=== Inside log-collector-test-pod: kubectl get nodes ===
+NAME             STATUS   ROLES           AGE   VERSION
+docker-desktop   Ready    control-plane   79d   v1.32.2
+
+=== Inside log-collector-test-pod: kubectl get secrets -A ===
+Error from server (Forbidden): secrets is forbidden: User "system:serviceaccount:default:log-collector" cannot list resource "secrets" in API group "" at the cluster scope

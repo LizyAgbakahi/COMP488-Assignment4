@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: monitoring-test-pod
+  namespace: monitoring
+spec:
+  serviceAccountName: monitoring-reader
+  containers:
+    - name: kubectl
+      image: bitnami/kubectl:latest
+      command: ["sleep", "3600"]
